@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: int_accidents_prep
+    config:
+      store_failures: true
+
+    columns:
+      - name: accident_id
+        tests:
+          - unique
+          - not_null
+        config:
+          severity: warn
+          
+      - name: date_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_id
+              config:
+                severity: warn
+
+      - name: time_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_time')
+                field: time_id
+              config:
+                severity: warn
+
+      - name: conditions_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_conditions')
+                field: conditions_id
+              config:
+                severity: warn
+
+      - name: profile_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_main_casualty_profile')
+                field: profile_id
+              config:
+                severity: warn
+
+      - name: infrastructure_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_infrastructure')
+                field: infrastructure_id
+              config:
+                severity: warn

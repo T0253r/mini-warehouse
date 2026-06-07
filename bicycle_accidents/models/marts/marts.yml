@@ -1,0 +1,16 @@
+version: 2
+models:
+  - name: fct_accident
+    columns:
+      - name: accident_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_date
+
+  - name: dim_time
+
+  - name: dim_conditions
+  
+  - name: dim_main_casualty_profile

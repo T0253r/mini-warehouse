@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: staging
+    tables:
+      - name: accidents
+        identifier: Accidents
+        meta:
+          external_location: "read_csv_auto('/home/t0253r/Studia/hurtownie/mini-warehouse/data/{identifier}.csv')"
+      - name: bikers
+        identifier: Bikers
+        meta:
+          external_location: "read_csv_auto('/home/t0253r/Studia/hurtownie/mini-warehouse/data/{identifier}.csv')"
