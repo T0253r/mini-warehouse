@@ -1,0 +1,66 @@
+version: "3"
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: lightdash
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  minio:
+    image: quay.io/minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadminpassword
+    command: server /data --console-address ":9001"
+    restart: always
+
+  createbuckets:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadminpassword) do echo 'Waiting for MinIO...' && sleep 1; done;
+      /usr/bin/mc mb myminio/lightdash-bucket || true;
+      exit 0;
+      "
+
+  lightdash:
+    image: lightdash/lightdash:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - PGHOST=db
+      - PGPORT=5432
+      - PGUSER=postgres
+      - PGPASSWORD=postgrespassword
+      - PGDATABASE=lightdash
+      - LIGHTDASH_SECRET=super_secret_key_minimum_32_characters_long_12345
+      - SECURE_COOKIES=false
+      - SITE_URL=http://localhost:8080
+      - PORT=8080
+      # MinIO/S3 Storage Configuration
+      - S3_ENDPOINT=http://minio:9000
+      - S3_BUCKET=lightdash-bucket
+      - S3_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadminpassword
+      - S3_FORCE_PATH_STYLE=true
+    depends_on:
+      - db
+      - minio
+      - createbuckets
+    restart: always
+
+volumes:
+  pgdata:
+  miniodata:
