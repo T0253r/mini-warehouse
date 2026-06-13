@@ -6,8 +6,8 @@ sources:
       - name: accidents
         identifier: Accidents
         meta:
-          external_location: "read_csv_auto('/home/t0253r/Studia/hurtownie/mini-warehouse/data/{identifier}.csv')"
+          external_location: "read_csv_auto('/home/t0253r/data/bicycle_accidents/{identifier}.csv')"
       - name: bikers
         identifier: Bikers
         meta:
-          external_location: "read_csv_auto('/home/t0253r/Studia/hurtownie/mini-warehouse/data/{identifier}.csv')"
+          external_location: "read_csv_auto('/home/t0253r/data/bicycle_accidents/{identifier}.csv')"
