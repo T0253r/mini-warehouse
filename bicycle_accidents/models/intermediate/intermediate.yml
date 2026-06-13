@@ -4,6 +4,8 @@ models:
   - name: int_accidents_prep
     config:
       store_failures: true
+    meta:
+      hidden: true
 
     columns:
       - name: accident_id

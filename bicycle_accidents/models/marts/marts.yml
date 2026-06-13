@@ -1,16 +1,137 @@
 version: 2
 models:
   - name: fct_accident
+    description: "Fact table containing bicycle accident occurrences and key metrics."
+    meta:
+      joins:
+        - join: dim_date
+          sql_on: ${fct_accident.date_id} = ${dim_date.date_id}
+        - join: dim_time
+          sql_on: ${fct_accident.time_id} = ${dim_time.time_id}
+        - join: dim_conditions
+          sql_on: ${fct_accident.conditions_id} = ${dim_conditions.conditions_id}
+        - join: dim_main_casualty_profile
+          sql_on: ${fct_accident.profile_id} = ${dim_main_casualty_profile.profile_id}
+        - join: dim_infrastructure
+          sql_on: ${fct_accident.infrastructure_id} = ${dim_infrastructure.infrastructure_id}
     columns:
       - name: accident_id
+        description: "Unique identifier for each accident."
         tests:
           - unique
           - not_null
+        meta:
+          metrics:
+            total_accidents:
+              label: "Total Accidents"
+              type: count
+      - name: num_of_casualties
+        description: "Number of casualties in the accident."
+        meta:
+          metrics:
+            total_casualties:
+              label: "Total Casualties"
+              type: sum
+            average_casualties:
+              label: "Average Casualties per Accident"
+              type: average
+      - name: num_of_vehicles
+        description: "Number of vehicles involved in the accident."
+        meta:
+          metrics:
+            total_vehicles:
+              label: "Total Vehicles"
+              type: sum
+            average_vehicles:
+              label: "Average Vehicles per Accident"
+              type: average
+      - name: date_id
+        description: "Foreign key for date dimension."
+      - name: time_id
+        description: "Foreign key for time dimension."
+      - name: conditions_id
+        description: "Foreign key for conditions dimension."
+      - name: profile_id
+        description: "Foreign key for casualty profile dimension."
+      - name: infrastructure_id
+        description: "Foreign key for infrastructure dimension."
 
   - name: dim_date
+    description: "Date dimension including year, month, day, and day names."
+    meta:
+      hidden: true
+    columns:
+      - name: date_id
+        description: "Primary key for date."
+      - name: date
+        description: "The calendar date."
+      - name: year
+        description: "Year value."
+      - name: month
+        description: "Month number."
+      - name: month_name
+        description: "Name of the month."
+      - name: day_of_month
+        description: "Day of month."
+      - name: day_of_week
+        description: "Day of week number."
+      - name: day_of_week_name
+        description: "Name of the day of week."
 
   - name: dim_time
+    description: "Time dimension including hour, minute, time of day name, and rush hour flags."
+    meta:
+      hidden: true
+    columns:
+      - name: time_id
+        description: "Primary key for time."
+      - name: hour
+        description: "Hour of the day."
+      - name: minute
+        description: "Minute of the hour."
+      - name: time_of_day_name
+        description: "Name of time of day (e.g. Night, Morning, Midday)."
+      - name: time_of_day_hours
+        description: "Time of day hour range."
+      - name: rush_hour
+        description: "Flag indicating whether it is rush hour."
 
   - name: dim_conditions
+    description: "Conditions dimension containing combinations of weather, light, and road conditions."
+    meta:
+      hidden: true
+    columns:
+      - name: conditions_id
+        description: "Primary key for conditions."
+      - name: weather_conditions
+        description: "Weather conditions (e.g. Rain, Snow, Clear)."
+      - name: light_conditions
+        description: "Light conditions (e.g. Daylight, Darkness)."
+      - name: road_conditions
+        description: "Road conditions (e.g. Dry, Wet, Frost)."
   
   - name: dim_main_casualty_profile
+    description: "Demographic profile of the casualty, including gender, age group, and severity."
+    meta:
+      hidden: true
+    columns:
+      - name: profile_id
+        description: "Primary key for profile."
+      - name: gender
+        description: "Gender of the casualty."
+      - name: age_grp
+        description: "Age group of the casualty."
+      - name: severity
+        description: "Severity of the casualty (e.g. Slight, Serious, Fatal)."
+
+  - name: dim_infrastructure
+    description: "Infrastructure dimension containing road type and speed limit."
+    meta:
+      hidden: true
+    columns:
+      - name: infrastructure_id
+        description: "Primary key for infrastructure."
+      - name: road_type
+        description: "Type of road."
+      - name: speed_limit
+        description: "Speed limit of the road."

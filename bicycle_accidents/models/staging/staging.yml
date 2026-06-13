@@ -2,4 +2,9 @@ version: 2
 
 models:
   - name: stg_accidents
+    meta:
+      hidden: true
+      
   - name: stg_bikers
+    meta:
+      hidden: true
