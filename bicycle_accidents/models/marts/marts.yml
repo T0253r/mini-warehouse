@@ -3,6 +3,7 @@ models:
   - name: fct_accident
     description: "Fact table containing bicycle accident occurrences and key metrics."
     meta:
+      hidden: true
       joins:
         - join: dim_date
           sql_on: ${fct_accident.date_id} = ${dim_date.date_id}
@@ -135,3 +136,141 @@ models:
         description: "Type of road."
       - name: speed_limit
         description: "Speed limit of the road."
+
+  - name: fct_accident_obt
+    description: "One Big Table (OBT) model denormalizing all accidents and dimensions for easy BI reporting."
+    meta:
+      group_details:
+        date_info:
+          label: "Date Info"
+          description: "Calendar and date related dimensions"
+        time_info:
+          label: "Time Info"
+          description: "Hour, minute, and rush hour dimensions"
+        conditions:
+          label: "Conditions"
+          description: "Weather, light, and road conditions"
+        casualty:
+          label: "Casualty Profile"
+          description: "Demographics and severity of casualties"
+        infrastructure:
+          label: "Infrastructure"
+          description: "Road type and speed limits"
+    columns:
+      - name: accident_id
+        description: "Unique identifier for each accident."
+        meta:
+          metrics:
+            total_accidents:
+              label: "Total Accidents"
+              type: count
+      - name: num_of_casualties
+        description: "Number of casualties."
+        meta:
+          metrics:
+            total_casualties:
+              label: "Total Casualties"
+              type: sum
+            average_casualties:
+              label: "Average Casualties per Accident"
+              type: average
+      - name: num_of_vehicles
+        description: "Number of vehicles involved."
+        meta:
+          metrics:
+            total_vehicles:
+              label: "Total Vehicles"
+              type: sum
+            average_vehicles:
+              label: "Average Vehicles per Accident"
+              type: average
+
+      # Date Info Group
+      - name: date
+        meta:
+          dimension:
+            groups: ["date_info"]
+      - name: year
+        meta:
+          dimension:
+            groups: ["date_info"]
+      - name: month
+        meta:
+          dimension:
+            groups: ["date_info"]
+      - name: month_name
+        meta:
+          dimension:
+            groups: ["date_info"]
+      - name: day_of_month
+        meta:
+          dimension:
+            groups: ["date_info"]
+      - name: day_of_week
+        meta:
+          dimension:
+            groups: ["date_info"]
+      - name: day_of_week_name
+        meta:
+          dimension:
+            groups: ["date_info"]
+
+      # Time Info Group
+      - name: hour
+        meta:
+          dimension:
+            groups: ["time_info"]
+      - name: minute
+        meta:
+          dimension:
+            groups: ["time_info"]
+      - name: time_of_day_name
+        meta:
+          dimension:
+            groups: ["time_info"]
+      - name: time_of_day_hours
+        meta:
+          dimension:
+            groups: ["time_info"]
+      - name: rush_hour
+        meta:
+          dimension:
+            groups: ["time_info"]
+
+      # Conditions Group
+      - name: weather_conditions
+        meta:
+          dimension:
+            groups: ["conditions"]
+      - name: light_conditions
+        meta:
+          dimension:
+            groups: ["conditions"]
+      - name: road_conditions
+        meta:
+          dimension:
+            groups: ["conditions"]
+
+      # Casualty Profile Group
+      - name: gender
+        meta:
+          dimension:
+            groups: ["casualty"]
+      - name: age_grp
+        meta:
+          dimension:
+            groups: ["casualty"]
+      - name: severity
+        meta:
+          dimension:
+            groups: ["casualty"]
+
+      # Infrastructure Group
+      - name: road_type
+        meta:
+          dimension:
+            groups: ["infrastructure"]
+      - name: speed_limit
+        meta:
+          dimension:
+            groups: ["infrastructure"]

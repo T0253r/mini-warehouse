@@ -4,7 +4,13 @@ models:
   - name: stg_accidents
     meta:
       hidden: true
-      
+    columns:
+      - name: accident_index
+        description: "Primary key for accidents."
+
   - name: stg_bikers
     meta:
       hidden: true
+    columns:
+      - name: accident_index
+        description: "Foreign key linking to the accident."
